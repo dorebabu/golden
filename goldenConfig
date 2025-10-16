@@ -1,0 +1,57 @@
+!
+router-id 10.10.10.0
+ntp add 100.100.10.10
+clock timezone Asia/Kolkata
+snmp-server trap modify 2 100.100.10.10 port 161 vrf None community Public
+hostname Spine-1
+syslog add 100.100.10.10
+ip protocol bgp route-map RM_SET_SRC
+!
+route-map FMCLI_IPV6_NH_GLOBAL permit 1
+ on-match next
+ set ipv6 next-hop prefer-global
+!
+route-map RM_SET_SRC permit 10
+ set src 10.10.10.0
+!
+interface ethernet Ethernet44
+ mtu 9000
+ ip address 40.0.0.2/31
+ forward-error-correction none
+!
+interface ethernet Ethernet46
+ mtu 9000
+ ip address 40.0.0.0/31
+ forward-error-correction none
+!
+interface loopback 1
+ ip address 10.10.10.0/32
+!
+router bgp 1001
+ neighbor 40.0.0.1 remote-as 1001
+ neighbor 40.0.0.3 remote-as 1001
+ neighbor 40.0.0.1 capability extended-nexthop
+ neighbor 40.0.0.3 capability extended-nexthop
+ bgp bestpath as-path multipath-relax
+ no bgp ebgp-requires-policy
+ address-family ipv4 unicast
+  neighbor 40.0.0.1 allowas-in 1
+  neighbor 40.0.0.3 allowas-in 1
+  neighbor 40.0.0.1 route-reflector-client
+  neighbor 40.0.0.3 route-reflector-client
+  neighbor 40.0.0.1 next-hop-self force
+  neighbor 40.0.0.3 next-hop-self force
+  network 40.0.0.0/31
+  network 40.0.0.2/31
+  redistribute connected
+  redistribute static
+ !
+ address-family ipv6 unicast
+  redistribute connected
+  redistribute static
+ !
+ address-family l2vpn evpn
+  neighbor 40.0.0.1 activate
+  neighbor 40.0.0.3 activate
+  neighbor 40.0.0.1 route-reflector-client
+  neighbor 40.0.0.3 route-reflector-client
