@@ -160,7 +160,7 @@ interfaces:
   - device: "Leaf-1"
     name: "Ethernet0"
     admin_state: "up"
-    mtu: 9000
+    mtu: 9200
     fec: "off"
     mode: "access"
     access_vlan: 201
