@@ -55,9 +55,9 @@ interfaces:
   - device: "cisconx-engai-leaf01"
     name: "Ethernet1/2"
     admin_state: "up"
-    mtu: 9216
+    mtu: 9200
     mode: "access"
-    access_vlan: 100
+    access_vlan: 101
     description: "Server port"
 
   # Leaf 02 interfaces
@@ -89,8 +89,8 @@ port_channels:
 # VRF definitions (if using VXLAN EVPN)
 vrfs:
   - name: "PROD_VRF"
-    vni: 50001
-    vlan: 2001
+    vni: 50002
+    vlan: 2003
     description: "Production VRF"
     devices:
       - "cisconx-engai-leaf01"
